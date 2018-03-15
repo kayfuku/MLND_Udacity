@@ -36,7 +36,9 @@ class Simulator(object):
 
     # Default.
     # def __init__(self, env, size=None, update_delay=2.0, display=True, log_metrics=False, optimized=False):
-    def __init__(self, env, size=None, update_delay=0.01, display=True, log_metrics=True, optimized=False):
+    # def __init__(self, env, size=None, update_delay=0.01, display=True, log_metrics=True, optimized=False):
+    def __init__(self, env, size=None, update_delay=0.001, display=False, log_metrics=True, optimized=True):
+
         self.env = env
         self.size = size if size is not None else ((self.env.grid_size[0] + 1) * self.env.block_size, (self.env.grid_size[1] + 2) * self.env.block_size)
         self.width, self.height = self.size
@@ -112,8 +114,9 @@ class Simulator(object):
 
     # Default. 
     # def run(self, tolerance=0.05, n_test=0):
-    def run(self, tolerance=0.05, n_test=10):
-        """ Run a simulation of the environment. 
+    # def run(self, tolerance=0.05, n_test=10):
+    def run(self, tolerance=0.01, n_test=10):
+        """ Run a simulation of the environment.
 
         'tolerance' is the minimum epsilon necessary to begin testing (if enabled)
         'n_test' is the number of testing trials simulated
@@ -132,10 +135,10 @@ class Simulator(object):
         while True:
 
             # Flip testing switch
-            if not testing:
-                if total_trials > 20: # Must complete minimum 20 training trials
+            if not testing:  # Training
+                if total_trials > 20:  # Must complete minimum 20 training trials
                     if a.learning:
-                        if a.epsilon < tolerance: # assumes epsilon decays to 0
+                        if a.epsilon < tolerance:  # assumes epsilon decays to 0
                             testing = True
                             trial = 1
                     else:
@@ -143,7 +146,7 @@ class Simulator(object):
                         trial = 1
                         
             # Break if we've reached the limit of testing trials
-            else:
+            else:  # Testing
                 if trial > n_test:
                     break
 

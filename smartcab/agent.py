@@ -28,7 +28,7 @@ class LearningAgent(Agent):
         ## TO DO ##
         ###########
         # Set any additional class parameters as needed
-        self.t = 0
+        self.num_trial = 0  # trial number
 
 
     def reset(self, destination=None, testing=False):
@@ -38,18 +38,44 @@ class LearningAgent(Agent):
 
         # Select the destination as the new location to route to
         self.planner.route_to(destination)
-        
+
         ########### 
         ## TO DO ##
         ###########
         # Update epsilon using a decay function of your choice
         # Update additional class parameters as needed
         # If 'testing' is True, set epsilon and alpha to 0
+        self.num_trial += 1
         if testing:
             self.epsilon = 0
             self.alpha = 0
         else:
-            self.epsilon -= 0.05
+            # With state set A.
+            # self.epsilon -= 0.05                             # S: 'C ~ A', R: 'D ~ A+', alpha=0.5
+            # self.epsilon = 0.05 ** self.num_trial            # S: 'A+', R: 'F', alpha=0.5
+            # self.epsilon = 1.0 / (self.num_trial ** 2)       # S: 'A+', R: 'D', alpha=0.5
+            # self.epsilon = math.exp(-0.05 * self.num_trial)  # S: 'D ~ A+', R: 'A ~ A+', alpha=0.5, tolerance: 0.05
+            # self.epsilon = math.exp(-0.05 * self.num_trial)  # S: 'A+', R: 'A+', alpha=0.5, tolerance: 0.1
+            # self.epsilon = math.exp(-0.05 * self.num_trial)  # S: 'A+', R: 'A+', alpha=0.5, tolerance: 0.01
+            # self.epsilon = math.cos(0.05 * self.num_trial)   # S: 'D ~ A+', R: 'B ~ A+', alpha=0.5
+            # self.epsilon = math.cos(0.05 * self.num_trial)   # S: 'A+', R: 'A', alpha=0.75
+            # self.epsilon -= 0.05                             # S: 'D', R: 'D', alpha=0.75
+            # self.epsilon *= 0.95                             # S: 'A+', R: 'B ~ A+', alpha=0.5
+            # self.epsilon *= 0.97                             # S: 'A+', R: 'A+', alpha=0.5, trials: 100
+            # self.epsilon = 0.75 ** self.num_trial            # S: 'A+', R: 'B', alpha=0.5
+            # self.epsilon -= 0.025                            # S: 'D', R: 'A+', alpha=0.5
+            # self.epsilon -= 0.01                             # S: 'A+', R: 'C', alpha=0.5
+            # self.epsilon -= 0.015                            # S: 'D ~ A+', R: 'A+', alpha=0.4
+            # self.epsilon -= 0.01                             # S: 'A+', R: 'A+', alpha=0.6
+            # self.epsilon -= 0.01                             # S: 'D', R: 'A+', alpha=0.7
+            # self.epsilon -= 0.002                            # S: 'D ~ A+', R: 'A+', alpha=0.7
+            # self.epsilon = math.exp(-0.05 * self.num_trial)  # S: 'A+', R: 'A', alpha=0.2
+            # self.epsilon = math.exp(-0.05 * self.num_trial)  # S: 'A+', R: 'A', alpha=0.8
+
+            # With state set B.
+            self.epsilon = math.exp(-0.05 * self.num_trial)  # S: 'A+', R: 'A+', alpha=0.5, tolerance: 0.01
+
+
 
         return None
 
@@ -77,7 +103,8 @@ class LearningAgent(Agent):
         # state = None
         # state = (waypoint, inputs['light'], inputs['left'], inputs['right'], inputs['oncoming'], deadline)
         # state = (waypoint, inputs['light'], inputs['left'], inputs['right'], inputs['oncoming'])
-        state = (waypoint, inputs['light'], inputs['oncoming'])
+        state = (waypoint, inputs['light'], inputs['oncoming'])                    # state set A
+        # state = (waypoint, inputs['light'], inputs['oncoming'], inputs['left'])  # state set B
 
         return state
 
@@ -130,7 +157,7 @@ class LearningAgent(Agent):
         # Otherwise, choose an action with the highest Q-value for the current state
         # Be sure that when choosing an action with highest Q-value that you randomly select
         # between actions that "tie".
-        if not self.learning:
+        if not self.learning or random.random() < self.epsilon:
             action = random.choice(self.valid_actions)
         else:
             max_actions = []

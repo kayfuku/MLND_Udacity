@@ -34,7 +34,7 @@ class Environment(object):
 
     def __init__(self, verbose=False, num_dummies=100, grid_size = (8, 6)):
         self.num_dummies = num_dummies  # Number of dummy driver agents in the environment
-        self.verbose = verbose # If debug output should be given
+        self.verbose = verbose  # If debug output should be given
 
         # Initialize simulation variables
         self.done = False
@@ -179,7 +179,7 @@ class Environment(object):
                 self.trial_data['success'] = 0
 
     def step(self):
-        """ This function is called when a time step is taken turing a trial. """
+        """ This function is called when a time step is taken during a trial. """
 
         # Pretty print to terminal
         print ""
@@ -301,49 +301,48 @@ class Environment(object):
 
         # Agent wants to drive forward:
         if action == 'forward':
-            if light != 'green': # Running red light
-                violation = 2 # Major violation
-                if inputs['left'] == 'forward' or inputs['right'] == 'forward': # Cross traffic
-                    violation = 4 # Accident
+            if light != 'green':  # Running red light
+                violation = 2  # Major violation
+                if inputs['left'] == 'forward' or inputs['right'] == 'forward':  # Cross traffic
+                    violation = 4  # Accident
         
         # Agent wants to drive left:
         elif action == 'left':
-            if light != 'green': # Running a red light
-                violation = 2 # Major violation
-                if inputs['left'] == 'forward' or inputs['right'] == 'forward': # Cross traffic
-                    violation = 4 # Accident
+            if light != 'green':  # Running a red light
+                violation = 2  # Major violation
+                if inputs['left'] == 'forward' or inputs['right'] == 'forward':  # Cross traffic
+                    violation = 4  # Accident
                 elif inputs['oncoming'] == 'right': # Oncoming car turning right
-                    violation = 4 # Accident
-            else:# Green light
-                if inputs['oncoming'] == 'right' or inputs['oncoming'] == 'forward': # Incoming traffic
-                    violation = 3 # Accident
-                else: # Valid move!
+                    violation = 4  # Accident
+            else:  # Green light
+                if inputs['oncoming'] == 'right' or inputs['oncoming'] == 'forward':  # Incoming traffic
+                    violation = 3  # Accident
+                else:  # Valid move!
                     heading = (heading[1], -heading[0])
 
         # Agent wants to drive right:
         elif action == 'right':
-            if light != 'green' and inputs['left'] == 'forward': # Cross traffic
-                violation = 3 # Accident
-            else: # Valid move!
+            if light != 'green' and inputs['left'] == 'forward':  # Cross traffic
+                violation = 3  # Accident
+            else:  # Valid move!
                 heading = (-heading[1], heading[0])
 
         # Agent wants to perform no action:
         elif action == None:
             if light == 'green': 
-                violation = 1 # Minor violation
-
+                violation = 1  # Minor violation
 
         # Did the agent attempt a valid move?
         if violation == 0:
-            if action == agent.get_next_waypoint(): # Was it the correct action?
-                reward += 2 - penalty # (2, 1)
+            if action == agent.get_next_waypoint():  # Was it the correct action?
+                reward += 2 - penalty  # (2, 1)
             elif action == None and light != 'green' and agent.get_next_waypoint() == 'right':
                 # valid action but incorrect (idling at red light, when we should have gone right on red)
-                reward += 1 - penalty # (1, 0)
-            elif action == None and light != 'green': # Was the agent stuck at a red light?
-                reward += 2 - penalty # (2, 1)
-            else: # Valid but incorrect
-                reward += 1 - penalty # (1, 0)
+                reward += 1 - penalty  # (1, 0)
+            elif action == None and light != 'green':  # Was the agent stuck at a red light?
+                reward += 2 - penalty  # (2, 1)
+            else:  # Valid but incorrect
+                reward += 1 - penalty  # (1, 0)
 
             # Move the agent
             if action is not None:
@@ -394,7 +393,7 @@ class Environment(object):
             self.trial_data['net_reward'] += reward
             self.trial_data['actions'][violation] += 1
 
-            if(self.verbose == True): # Debugging
+            if(self.verbose == True):  # Debugging
                 print "Environment.act(): Step data: {}".format(self.step_data)
         return reward
 
