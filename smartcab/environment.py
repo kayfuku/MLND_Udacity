@@ -129,8 +129,8 @@ class Environment(object):
 
         start_heading = random.choice(self.valid_headings)
         distance = self.compute_dist(start, destination)
-        deadline = distance * 5 # 5 time steps per intersection away
-        if(self.verbose == True): # Debugging
+        deadline = distance * 5  # 5 time steps per intersection away
+        if(self.verbose == True):  # Debugging
             print "Environment.reset(): Trial set up with start = {}, destination = {}, deadline = {}".format(start, destination, deadline)
 
         # Create a map of all possible initial positions
@@ -163,8 +163,8 @@ class Environment(object):
                 }
                 # Now delete the taken location and heading from 'positions'
                 positions[intersection] = list(set(positions[intersection]) - set([heading]))
-                if positions[intersection] == list(): # No headings available for intersection
-                    del positions[intersection] # Delete the intersection altogether
+                if positions[intersection] == list():  # No headings available for intersection
+                    del positions[intersection]  # Delete the intersection altogether
 
     
             agent.reset(destination=(destination if agent is self.primary_agent else None), testing=testing)
@@ -211,12 +211,12 @@ class Environment(object):
             if agent_deadline <= self.hard_time_limit:
                 self.done = True
                 self.success = False
-                if self.verbose: # Debugging
+                if self.verbose:  # Debugging
                     print "Environment.step(): Primary agent hit hard time limit ({})! Trial aborted.".format(self.hard_time_limit)
             elif self.enforce_deadline and agent_deadline <= 0:
                 self.done = True
                 self.success = False
-                if self.verbose: # Debugging
+                if self.verbose:  # Debugging
                     print "Environment.step(): Primary agent ran out of time! Trial aborted."
 
         self.t += 1
@@ -312,7 +312,7 @@ class Environment(object):
                 violation = 2  # Major violation
                 if inputs['left'] == 'forward' or inputs['right'] == 'forward':  # Cross traffic
                     violation = 4  # Accident
-                elif inputs['oncoming'] == 'right': # Oncoming car turning right
+                elif inputs['oncoming'] == 'right':  # Oncoming car turning right
                     violation = 4  # Accident
             else:  # Green light
                 if inputs['oncoming'] == 'right' or inputs['oncoming'] == 'forward':  # Incoming traffic
@@ -405,8 +405,7 @@ class Environment(object):
         dx = dx1 if dx1 < dx2 else dx2
 
         dy1 = abs(b[1] - a[1])
-        dy2 = abs(self.
-            grid_size[1] - dy1)
+        dy2 = abs(self.grid_size[1] - dy1)
         dy = dy1 if dy1 < dy2 else dy2
 
         return dx + dy
