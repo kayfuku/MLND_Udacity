@@ -167,6 +167,8 @@ class LearningAgent(Agent):
                     max_actions.append(key)
 
             action = random.choice(max_actions)
+            # Review 2
+            # action = random.choice([act for act, val in self.Q[state].items() if val == self.get_maxQ(state)])
 
         return action
 
