@@ -37,7 +37,7 @@ class Simulator(object):
     # Default.
     # def __init__(self, env, size=None, update_delay=2.0, display=True, log_metrics=False, optimized=False):
     # def __init__(self, env, size=None, update_delay=0.01, display=True, log_metrics=True, optimized=False):
-    def __init__(self, env, size=None, update_delay=0.001, display=False, log_metrics=True, optimized=True):
+    def __init__(self, env, size=None, update_delay=0.001, display=True, log_metrics=True, optimized=True):
 
         self.env = env
         self.size = size if size is not None else ((self.env.grid_size[0] + 1) * self.env.block_size, (self.env.grid_size[1] + 2) * self.env.block_size)
